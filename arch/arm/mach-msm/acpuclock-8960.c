@@ -89,21 +89,54 @@ acpuclk_set_rate footprint cpu1		: phy 0x889F1040 : virt 0xFE703040
 #define CPU_FOOT_PRINT_BASE_CPU0_VIRT		(MSM_KERNEL_FOOTPRINT_BASE + 0x0)
 static void set_acpuclk_foot_print(unsigned cpu, unsigned state)
 {
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x40) + cpu;
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x3c) + cpu;
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_2DOT1GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x44) + cpu;
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
 	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x3C) + cpu;
+#endif
 	*status = (CPU_FOOT_PRINT_MAGIC | state);
 	mb();
 }
 
 static void set_acpuclk_cpu_freq_foot_print(unsigned cpu, unsigned khz)
 {
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x40) + cpu;
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x3c) + cpu;
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_2DOT1GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x44) + cpu;
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
 	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x30) + cpu;
+#endif
 	*status = khz;
 	mb();
 }
 
 static void set_acpuclk_L2_freq_foot_print(unsigned khz)
 {
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x32);
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x3c);
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_2DOT1GHZ
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x32);
+#endif
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
 	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x38);
+#endifh
 	*status = khz;
 	mb();
 }
@@ -157,11 +190,7 @@ static void set_acpuclk_L2_freq_foot_print(unsigned khz)
 
 /* HTC: Custom max frequency. */
 /* #ifdef CONFIG_ACPU_CUSTOM_FREQ_SUPPORT */
-#ifdef CONFIG_ACPU_OVERCLOCK
 static int acpu_max_freq = 1890000;
-#else
-static int acpu_max_freq = 1512000;
-#endif
 
 enum scalables {
 	CPU0 = 0,
@@ -466,6 +495,7 @@ static struct msm_bus_paths bw_level_tbl[] = {
 	[4] = BW_MBPS(3200), /* At least 400 MHz on bus. */
 	[5] = BW_MBPS(3600), /* At least 450 MHz on bus. */
 	[6] = BW_MBPS(3936), /* At least 492 MHz on bus. */
+	[7] = BW_MBPS(4264), /* At least 533 MHz on bus. */
 };
 
 static struct msm_bus_scale_pdata bus_client_pdata = {
@@ -575,10 +605,18 @@ static struct acpu_level acpu_freq_tbl_8960_kraitv2_slow[] = {
 	{ 0, {  1404000, HFPLL, 1, 0, 0x34 }, L2(16), 1237500 },
 	{ 1, {  1458000, HFPLL, 1, 0, 0x36 }, L2(16), 1237500 },
 	{ 1, {  1512000, HFPLL, 1, 0, 0x38 }, L2(18), 1250000 },
-        { 1, {  1674000, HFPLL, 1, 0, 0x3A }, L2(18), 1275000 },
-        { 1, {  1728000, HFPLL, 1, 0, 0x3C }, L2(19), 1300000 },
-        { 1, {  1809000, HFPLL, 1, 0, 0x3E }, L2(19), 1325000 },
-        { 1, {  1890000, HFPLL, 1, 0, 0x40 }, L2(19), 1350000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
+	{ 1, {  1674000, HFPLL, 1, 0, 0x3A }, L2(18), 1275000 },
+	{ 1, {  1728000, HFPLL, 1, 0, 0x3C }, L2(19), 1300000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+	{ 1, {  1809000, HFPLL, 1, 0, 0x3E }, L2(19), 1325000 },
+	{ 1, {  1890000, HFPLL, 1, 0, 0x40 }, L2(19), 1350000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
+	{ 1, {  1998000, HFPLL, 1, 0, 0x42 }, L2(19), 1350000 },
+	{ 1, {  2106000, HFPLL, 1, 0, 0x44 }, L2(19), 1350000 },
+#endif
+#endif
+#endif
 	{ 0, { 0 } }
 };
 
@@ -606,10 +644,18 @@ static struct acpu_level acpu_freq_tbl_8960_kraitv2_nom[] = {
 	{ 0, {  1404000, HFPLL, 1, 0, 0x34 }, L2(16), 1175000 },
 	{ 1, {  1458000, HFPLL, 1, 0, 0x36 }, L2(16), 1187500 },
 	{ 1, {  1512000, HFPLL, 1, 0, 0x38 }, L2(18), 1200000 },
-        { 1, {  1674000, HFPLL, 1, 0, 0x3A }, L2(18), 1225000 },
-        { 1, {  1728000, HFPLL, 1, 0, 0x3C }, L2(19), 1250000 },
-        { 1, {  1809000, HFPLL, 1, 0, 0x3E }, L2(19), 1275000 },
-        { 1, {  1890000, HFPLL, 1, 0, 0x40 }, L2(19), 1300000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
+	{ 1, {  1674000, HFPLL, 1, 0, 0x3A }, L2(18), 1225000 },
+	{ 1, {  1728000, HFPLL, 1, 0, 0x3C }, L2(19), 1250000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+	{ 1, {  1809000, HFPLL, 1, 0, 0x3E }, L2(19), 1275000 },
+	{ 1, {  1890000, HFPLL, 1, 0, 0x40 }, L2(19), 1300000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
+	{ 1, {  1998000, HFPLL, 1, 0, 0x42 }, L2(19), 1325000 },
+	{ 1, {  2106000, HFPLL, 1, 0, 0x44 }, L2(19), 1350000 },
+#endif
+#endif
+#endif
 	{ 0, { 0 } }
 };
 
@@ -637,10 +683,18 @@ static struct acpu_level acpu_freq_tbl_8960_kraitv2_fast[] = {
 	{ 0, {  1404000, HFPLL, 1, 0, 0x34 }, L2(16), 1125000 },
 	{ 1, {  1458000, HFPLL, 1, 0, 0x36 }, L2(16), 1137500 },
 	{ 1, {  1512000, HFPLL, 1, 0, 0x38 }, L2(18), 1150000 },
-        { 1, {  1674000, HFPLL, 1, 0, 0x3A }, L2(18), 1175000 },
-        { 1, {  1728000, HFPLL, 1, 0, 0x3C }, L2(19), 1200000 },
-        { 1, {  1809000, HFPLL, 1, 0, 0x3E }, L2(19), 1250000 },
-        { 1, {  1890000, HFPLL, 1, 0, 0x40 }, L2(19), 1275000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
+	{ 1, {  1674000, HFPLL, 1, 0, 0x3A }, L2(18), 1175000 },
+	{ 1, {  1728000, HFPLL, 1, 0, 0x3C }, L2(19), 1200000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+	{ 1, {  1809000, HFPLL, 1, 0, 0x3E }, L2(19), 1250000 },
+	{ 1, {  1890000, HFPLL, 1, 0, 0x40 }, L2(19), 1275000 },
+#ifndef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
+	{ 1, {  1998000, HFPLL, 1, 0, 0x42 }, L2(19), 1300000 },
+	{ 1, {  2106000, HFPLL, 1, 0, 0x44 }, L2(19), 1325000 },
+#endif
+#endif
+#endif
         { 0, { 0 } }
 };
 
