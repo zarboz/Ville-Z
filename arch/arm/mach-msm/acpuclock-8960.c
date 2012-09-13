@@ -185,8 +185,6 @@ static void set_acpuclk_L2_freq_foot_print(unsigned khz)
 
 
 /* HTC: Custom max frequency. */
-/* #ifdef CONFIG_ACPU_CUSTOM_FREQ_SUPPORT */
-static int acpu_max_freq = 2106000;
 
 enum scalables {
 	CPU0 = 0,
@@ -1480,7 +1478,7 @@ static void __init bus_init(void)
 }
 
 #ifdef CONFIG_CPU_FREQ_MSM
-static struct cpufreq_frequency_table freq_table[NR_CPUS][FREQ_TABLE_SIZE];
+static struct cpufreq_frequency_table freq_table[NR_CPUS][30];
 
 static void __init cpufreq_table_init(void)
 {
