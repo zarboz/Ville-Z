@@ -126,17 +126,17 @@ static void set_acpuclk_cpu_freq_foot_print(unsigned cpu, unsigned khz)
 static void set_acpuclk_L2_freq_foot_print(unsigned khz)
 {
 #ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
-	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x32);
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x40);
 #endif
 #ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
 	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x3c);
 #endif
 #ifdef CONFIG_MSM_CPU_MAX_CLK_2DOT1GHZ
-	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x32);
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x40);
 #endif
 #ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
-	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x38);
-#endifh
+	unsigned *status = (unsigned *)(CPU_FOOT_PRINT_BASE_CPU0_VIRT + 0x30);
+#endif
 	*status = khz;
 	mb();
 }
