@@ -2289,9 +2289,29 @@ config ACPU_MAX_FREQ
 	  If set to non-zero number, will search for this frequency in
           frequency table and set as maximum supported frequency if found.
 
-config ACPU_OVERCLOCK
-	bool "Use overclock"
+config MSM_CPU_MAX_CLK_2DOT1GHZ
+	bool "CPU Max 2.1Ghz clk support"
 	default n
+	help
+	  To support the Max 2.1Ghz.
+
+config MSM_CPU_MAX_CLK_1DOT89GHZ
+	bool "CPU Max 1.89Ghz clk support"
+	default n
+	help
+	  To support the Max 1.89Ghz.
+	  
+config MSM_CPU_MAX_CLK_1DOT7GHZ
+	bool "CPU Max 1.7ghz clk support"
+	default n
+	help
+	  To support the Max 1.7Ghz.
+
+config MSM_CPU_MAX_CLK_1DOT5GHZ
+	bool "CPU Max 1.5Ghz clk support"
+	default n
+	help
+	  To support the Max 1.5Ghz.
 
 config AUDIO_USAGE_FOR_POWER_CONSUMPTION
 	bool "AUDIO_USAGE_FOR_POWER_CONSUMPTION"
