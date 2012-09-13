@@ -50,7 +50,7 @@ static int lowmem_adj[6] = {
 	12,
 };
 static int lowmem_adj_size = 4;
-static size_t lowmem_minfree[6] = {
+static int lowmem_minfree[6] = {
 	3 * 512,	/* 6MB */
 	2 * 1024,	/* 8MB */
 	4 * 1024,	/* 16MB */
@@ -86,10 +86,38 @@ static int last_min_adj = OOM_ADJUST_MAX + 1;;
 #define lowmem_print(level, x...)			\
 	do {						\
 		if (lowmem_debug_level >= (level))	\
-			printk("[K] "x);		\
+			printk(x);			\
 	} while (0)
 
-extern void show_meminfo(void);
+static void show_meminfo(void)
+{
+	struct vmalloc_info vmi;
+	unsigned long free = global_page_state(NR_FREE_PAGES) << 2;
+	unsigned long active_file = global_page_state(NR_ACTIVE_FILE) << 2;
+	unsigned long inactive_file = global_page_state(NR_INACTIVE_FILE) << 2;
+	unsigned long shem = global_page_state(NR_SHMEM) << 2;
+	unsigned long mlock = global_page_state(NR_MLOCK) << 2;
+	unsigned long anon = (global_page_state(NR_ACTIVE_ANON) + global_page_state(NR_INACTIVE_ANON)) << 2;
+	unsigned long mapped = global_page_state(NR_FILE_MAPPED) << 2;
+	unsigned long slab_reclaimable = global_page_state(NR_SLAB_RECLAIMABLE) << 2;
+	unsigned long slab_unreclaimable = global_page_state(NR_SLAB_UNRECLAIMABLE) << 2;
+	unsigned long pagetables = global_page_state(NR_PAGETABLE) << 2;
+	unsigned long kernelstack = global_page_state(NR_KERNEL_STACK) * THREAD_SIZE / 1024;
+	unsigned long subtotal = free + active_file + inactive_file + shem + mlock + anon + mapped
+		                               + slab_reclaimable + slab_unreclaimable + pagetables + kernelstack;
+	get_vmalloc_info(&vmi);
+
+	printk(" free:%lu \n"
+		" active_file:%luK inactive_file:%luK shem:%luK mlock:%luK [cache]\n"
+		" anon:%luK mapped:%luK [PSS]\n"
+		" slab_reclaimable:%luK slab_unreclaimable:%luK\n"
+		" pagetables:%luK kernelstack:%luK\n"
+		" vmalloc_alloc:%luK\n"
+		" subtotal:%luK(%luK)\n",
+		free, active_file, inactive_file, shem, mlock, anon, mapped, slab_reclaimable, slab_unreclaimable,
+		pagetables, kernelstack, (vmi.alloc >> 10), subtotal, subtotal + (vmi.alloc >> 10)
+		);
+}
 
 /**
  * dump_tasks - dump current memory state of all system tasks
@@ -129,7 +157,7 @@ static int shrink_cache_possible(gfp_t gfp_mask) {
 	ret = (gfp_mask & __GFP_FS) &&
 		(dentry_stat.nr_unused > 0 || inodes_stat.nr_unused > 0);
 	if (!ret)
-		lowmem_print(5, "%s: can't shrink page cache anymore\n", __func__);
+		lowmem_print(1, "%s: can't shrink page cache anymore\n", __func__);
 	return ret;
 }
 
