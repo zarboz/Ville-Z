@@ -58,11 +58,28 @@ static int override_cpu;
 static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq)
 {
 	int ret = 0;
-	
+#ifdef CONFIG_PERFLOCK
+	int perf_freq = 0;
+#endif
 	struct cpufreq_freqs freqs;
 
 	freqs.old = policy->cur;
-
+#ifdef CONFIG_PERFLOCK
+	if (override_cpu) {
+		/* mfreq enabled */
+		if (policy->cur == policy->max)
+			return 0;
+		else
+			freqs.new = policy->max;
+	} else if ((perf_freq = perflock_override(policy, new_freq))) {
+		/* perflock & cpufreq_ceiling enabled */
+		if (policy->cur == perf_freq)
+			return 0;
+		else
+			freqs.new = perf_freq;
+	} else
+		freqs.new = new_freq;
+#else
 	if (override_cpu) {
 		if (policy->cur == policy->max)
 			return 0;
@@ -70,7 +87,7 @@ static int set_cpu_freq(struct cpufreq_policy *policy, unsigned int new_freq)
 			freqs.new = policy->max;
 	} else
 		freqs.new = new_freq;
-
+#endif
 	freqs.cpu = policy->cpu;
 	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
 	ret = acpuclk_set_rate(policy->cpu, freqs.new, SETRATE_CPUFREQ);
@@ -185,13 +202,13 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 	table = cpufreq_frequency_get_table(policy->cpu);
 	if (cpufreq_frequency_table_cpuinfo(policy, table)) {
 #ifdef CONFIG_MSM_CPU_FREQ_SET_MIN_MAX
-		policy->cpuinfo.min_freq = 192000;
-		policy->cpuinfo.max_freq = 2106000;
+		policy->cpuinfo.min_freq = CONFIG_MSM_CPU_FREQ_MIN;
+		policy->cpuinfo.max_freq = CONFIG_MSM_CPU_FREQ_MAX;
 #endif
 	}
 #ifdef CONFIG_MSM_CPU_FREQ_SET_MIN_MAX
-	policy->min = 192000;
-	policy->max = 2106000;
+	policy->min = CONFIG_MSM_CPU_FREQ_MIN;
+	policy->max = CONFIG_MSM_CPU_FREQ_MAX;
 #endif
 
 	cur_freq = acpuclk_get_rate(policy->cpu);
@@ -217,7 +234,7 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 
 	policy->cur = cur_freq;
 
-	policy->cpuinfo.transition_latency = 
+	policy->cpuinfo.transition_latency =
 		acpuclk_get_switch_time() * NSEC_PER_USEC;
 #ifdef CONFIG_SMP
 	cpu_work = &per_cpu(cpufreq_work, policy->cpu);
@@ -286,8 +303,7 @@ static ssize_t store_mfreq(struct sysdev_class *class,
 
 static SYSDEV_CLASS_ATTR(mfreq, 0200, NULL, store_mfreq);
 
-static struct freq_attr *msm_cpufreq_attr[] = {	
-
+static struct freq_attr *msm_freq_attr[] = {
 	&cpufreq_freq_attr_scaling_available_freqs,
 	NULL,
 };
@@ -299,7 +315,7 @@ static struct cpufreq_driver msm_cpufreq_driver = {
 	.verify		= msm_cpufreq_verify,
 	.target		= msm_cpufreq_target,
 	.name		= "msm",
-	.attr           = msm_cpufreq_attr,
+	.attr		= msm_freq_attr,
 };
 
 static struct notifier_block msm_cpufreq_pm_notifier = {
