@@ -39,7 +39,7 @@
  * also protects the cpufreq_cpu_data array.
  */
 
-#ifdef CONFIG_MSM_CPU_MAX_2DOT1GHZ
+#ifdef CONFIG_MSM_ACPU_OVERCLOCK#ifdef CONFIG_MSM_CPU_MAX_2DOT1GHZ
 #define FREQ_STEPS	27
 #endif
 #ifdef CONFIG_MSM_CPU_MAX_1DOT89GHZGHZ
@@ -51,6 +51,7 @@
 #ifdef CONFIG_MSM_CPU_MAX_1DOT5GHZ
 #define FREQ_STEPS	21
 #endif
+
 
 static struct cpufreq_driver *cpufreq_driver;
 static DEFINE_PER_CPU(struct cpufreq_policy *, cpufreq_cpu_data);
@@ -429,6 +430,7 @@ static ssize_t show_cpuinfo_cur_freq(struct cpufreq_policy *policy,
 }
 
 
+
 /**
  * show_scaling_governor - show the current policy for the specified CPU
  */
@@ -477,7 +479,8 @@ static ssize_t store_scaling_governor(struct cpufreq_policy *policy,
 	if (ret)
 		return ret;
 	else
-		return count;
+		return cou
+nt;
 }
 
 /**
@@ -694,7 +697,7 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 	unsigned int ret = -EINVAL;
 	int u[FREQ_STEPS];
 
-	ret = sscanf(buf, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d", &u[0], &u[1], &u[2], &u[3], &u[4], &u[5], &u[6], &u[7], &u[8], &u[9], &u[10], &u[11], &u[12], &u[13], &u[14], &u[15], &u[16], &u[17], &u[18], &u[19], &u[20], &u[21], &u[22],);
+	ret = sscanf(buf, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d", &u[0], &u[1], &u[2], &u[3], &u[4], &u[5], &u[6], &u[7], &u[8], &u[9], &u[10], &u[11], &u[12], &u[13], &u[14], &u[15], &u[16], &u[17], &u[18], &u[19], &u[20], &u[21], &u[22], &u[23]);
 	if(ret != FREQ_STEPS) {
 		return -EINVAL;
 	}
