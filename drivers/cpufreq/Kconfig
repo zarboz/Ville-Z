@@ -38,7 +38,11 @@ config CPU_FREQ_STAT_DETAILS
 	depends on CPU_FREQ_STAT
 	help
 	  This will show detail CPU frequency translation table in sysfs file
-	  system.
+	  system.	bool "CPU Max 2.1Ghz clk support"
+	default n
+	help
+	  To support the Max 2.1Ghz.
+
 
 	  If in doubt, say N.
 
@@ -79,29 +83,7 @@ config CPU_FREQ_DEFAULT_GOV_USERSPACE
 config CPU_FREQ_DEFAULT_GOV_ONDEMAND
 	bool "ondemand"
 	select CPU_FREQ_GOV_ONDEMAND
-	select CPU_FREQ_GOV_PERFORMANCEconfig MSM_CPU_MAX_CLK_2DOT1GHZ
-	bool "CPU Max 2.1Ghz clk support"
-	default n
-	help
-	  To support the Max 2.1Ghz.
-
-config MSM_CPU_MAX_CLK_1DOT89GHZ
-	bool "CPU Max 1.89Ghz clk support"
-	default n
-	help
-	  To support the Max 1.89Ghz.
-	  
-config MSM_CPU_MAX_CLK_1DOT7GHZ
-	bool "CPU Max 1.7ghz clk support"
-	default n
-	help
-	  To support the Max 1.7Ghz.
-
-config MSM_CPU_MAX_CLK_1DOT5GHZ
-	bool "CPU Max 1.5Ghz clk support"
-	default n
-	help
-	  To support the Max 1.5Ghz.
+	select CPU_FREQ_GOV_PERFORMANCEconfig
 	help
 	  Use the CPUFreq governor 'ondemand' as default. This allows
 	  you to get a full dynamic frequency capable system by simply
@@ -501,31 +483,6 @@ config CPU_FREQ_GOV_BRAZILIANWAX
           brazilianwax' - a "slightly more agressive smart" optimized governor!
  
 	  If in doubt, say Y.
-	  
-	  
-config MSM_CPU_MAX_VLT_2DOT1GHZ
-	bool "CPU Max 2.1Ghz clk support"
-	default n
-	help
-	  To support the Max 2.1Ghz.
-
-config MSM_CPU_MAX_VLT_1DOT89GHZ
-	bool "CPU Max 1.89Ghz clk support"
-	default n
-	help
-	  To support the Max 1.89Ghz.
-	  
-config MSM_CPU_MAX_VLT_1DOT7GHZ
-	bool "CPU Max 1.7ghz clk support"
-	default n
-	help
-	  To support the Max 1.7Ghz.
-
-config MSM_CPU_MAX_VLT_1DOT5GHZ
-	bool "CPU Max 1.5Ghz clk support"
-	default n
-	help
-	  To support the Max 1.5Ghz.
 	  
 
 

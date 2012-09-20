@@ -39,20 +39,20 @@
  * also protects the cpufreq_cpu_data array.
  */
 
-#ifdef CONFIG_MSM_CPU_MAX_VLT_2DOT1GHZ
+#ifdef CONFIG_MSM_CPU_MAX_CLK_2DOT1GHZ
 #define FREQ_STEPS	27
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_VLT__1DOT89GHZ
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
 #define FREQ_STEPS	25
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT7GHZ
-#define FREQ_STEPS	22
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
+#define FREQ_STEPS	23
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT5GHZ
-#define FREQ_STEPS	21
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
+#define FREQ_STEPS	22
 #endif
 
 static struct cpufreq_driver *cpufreq_driver;
@@ -657,7 +657,7 @@ ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf)
 	return acpuclk_get_vdd_levels_str(buf, FREQ_STEPS);
 }
 
-#ifdef CONFIG_MSM_CPU_MAX_VLT_2DOT1GHZ
+#ifdef CONFIG_MSM_CPU_MAX_CLK_2DOT1GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
@@ -675,7 +675,7 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT89GHZ
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT89GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
@@ -692,7 +692,7 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 }
 
 #endif
-#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT7GHZ
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT7GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
@@ -709,14 +709,14 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 }
 
 #endif
-#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT5GHZ
+#ifdef CONFIG_MSM_CPU_MAX_CLK_1DOT5GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
 	unsigned int ret = -EINVAL;
 	int u[FREQ_STEPS];
 
-	ret = sscanf(buf, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d", &u[0], &u[1], &u[2], &u[3], &u[4], &u[5], &u[6], &u[7], &u[8], &u[9], &u[10], &u[11], &u[12], &u[13], &u[14], &u[15], &u[16], &u[17], &u[18], &u[19], &u[20], &u[21]);
+	ret = sscanf(buf, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d", &u[0], &u[1], &u[2], &u[3], &u[4], &u[5], &u[6], &u[7], &u[8], &u[9], &u[10], &u[11], &u[12], &u[13], &u[14], &u[15], &u[16], &u[17], &u[18], &u[19], &u[20], &u[21], &u[22]);
 	if(ret != FREQ_STEPS) {
 		return -EINVAL;
 	}
