@@ -649,25 +649,7 @@ static ssize_t store_vdd_levels(struct kobject *a, struct attribute *b, const ch
 			return -EINVAL;
 	}
 		
-#ifdef CONFIG_MSM_CPU_MAX_2DOT1GHZ
-#define FREQ_STEPS	27
-#endif
-#ifdef CONFIG_MSM_CPU_MAX_1DOT89GHZGHZ
-#define FREQ_STEPS	25
-#endif
-#ifdef CONFIG_MSM_CPU_MAX_1DOT7GHZ
-#define FREQ_STEPS	22
-#endif
-#ifdef CONFIG_MSM_CPU_MAX_1DOT5GHZ
-#define FREQ_STEPS	21
-#endif
-
 	return count;
-}
-
-ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf)
-{
-	return acpuclk_get_vdd_levels_str(buf, FREQ_STEPS);
 }
 
 #ifdef CONFIG_MSM_CPU_MAX_2DOT1GHZ
