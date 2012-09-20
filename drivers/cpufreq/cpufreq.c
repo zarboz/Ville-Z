@@ -39,19 +39,19 @@
  * also protects the cpufreq_cpu_data array.
  */
 
-#ifdef CONFIG_MSM_CPU_MAX_2DOT1GHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT_2DOT1GHZ
 #define FREQ_STEPS	27
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_1DOT89GHZGHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT__1DOT89GHZ
 #define FREQ_STEPS	25
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_1DOT7GHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT7GHZ
 #define FREQ_STEPS	22
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_1DOT5GHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT5GHZ
 #define FREQ_STEPS	21
 #endif
 
@@ -652,7 +652,12 @@ static ssize_t store_vdd_levels(struct kobject *a, struct attribute *b, const ch
 	return count;
 }
 
-#ifdef CONFIG_MSM_CPU_MAX_2DOT1GHZ
+ssize_t show_UV_mV_table(struct cpufreq_policy *policy, char *buf)
+{
+	return acpuclk_get_vdd_levels_str(buf, FREQ_STEPS);
+}
+
+#ifdef CONFIG_MSM_CPU_MAX_VLT_2DOT1GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
@@ -670,7 +675,7 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 
 #endif
 
-#ifdef CONFIG_MSM_CPU_MAX_1DOT89GHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT89GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
@@ -687,7 +692,7 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 }
 
 #endif
-#ifdef CONFIG_MSM_CPU_MAX_1DOT7GHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT7GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
@@ -704,7 +709,7 @@ ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
 }
 
 #endif
-#ifdef CONFIG_MSM_CPU_MAX_1DOT5GHZ
+#ifdef CONFIG_MSM_CPU_MAX_VLT_1DOT5GHZ
 ssize_t store_UV_mV_table(struct cpufreq_policy *policy,
                                       const char *buf, size_t count)
 {
